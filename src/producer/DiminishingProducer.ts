@@ -3,18 +3,18 @@ import { Easing, getEasing } from "../util/easings";
 export class DiminishingProducer {
 	speed: number;
 	multipliers: number[];
+	ticksPerSecond: number;
+	shouldBeCleaned: boolean = false;
 	diminish: {
 		value: number;
 		easing: (x: number) => number;
 		ticksToZero: number;
 		ticksPassed: number;
-		shouldBeCleaned: boolean;
 	} = {
 		value: 0,
 		easing: (x) => x,
 		ticksToZero: 0,
 		ticksPassed: 0,
-		shouldBeCleaned: false,
 	};
 
 	constructor({
@@ -22,33 +22,36 @@ export class DiminishingProducer {
 		multipliers = [],
 		easing = Easing.EaseOutCubic,
 		ticksToZero,
+		ticksPerSecond,
 	}: {
 		speed: number;
 		multipliers?: number[];
 		easing: Easing;
 		ticksToZero: number;
+		ticksPerSecond: number;
 	}) {
 		this.speed = speed;
 		this.multipliers = multipliers;
 		this.diminish.easing = getEasing(easing);
 		this.diminish.value = 1;
 		this.diminish.ticksToZero = ticksToZero;
+		this.ticksPerSecond = ticksPerSecond;
 	}
 
 	update() {
 		this.diminish.ticksPassed++;
 		this.diminish.value = this.diminish.easing(
-			1 - this.diminish.ticksPassed / this.diminish.ticksToZero
+			1 - this.diminish.ticksPassed / this.diminish.ticksToZero,
 		);
 		if (this.diminish.value === 0) {
-			this.diminish.shouldBeCleaned = true;
+			this.shouldBeCleaned = true;
 		}
 	}
 
-	// TODO: Make tps a class value
-	getTickValue(ticksPerSecond: number): number {
-		if (this.diminish.shouldBeCleaned) return 0;
-		let value = ticksPerSecond ? 1 / ticksPerSecond : 1;
+	getTickValue(ticksPerSecond?: number): number {
+		let tps = ticksPerSecond || this.ticksPerSecond;
+		if (this.shouldBeCleaned) return 0;
+		let value = tps ? 1 / tps : 1;
 		return (
 			[this.speed, ...this.multipliers].reduce((a, b) => a * b) *
 			value *

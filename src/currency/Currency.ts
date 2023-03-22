@@ -1,50 +1,88 @@
 import { AnyProducer } from "../producer";
 import { SimpleProducer } from "../producer/SimpleProducer";
 
+/**
+ * A currency is a resource that can be earned and spent.
+ * It has a value, a name, and a list of producers.
+ *
+ * @param amount The amount of the currency
+ * @param name The name of the currency
+ * @param producers The producers producing the currency
+ * @param ticksPerSecond The amount of ticks per second
+ */
 export class Currency {
-	value: number;
+	amount: number;
 	name: string;
 	producers: AnyProducer[];
+	ticksPerSecond: number;
 
 	constructor({
-		value,
+		amount,
 		name,
 		producers = [],
+		ticksPerSecond,
 	}: {
-		value: number;
+		amount: number;
 		name: string;
 		producers?: AnyProducer[];
+		ticksPerSecond: number;
 	}) {
-		this.value = value;
+		this.amount = amount;
 		this.name = name;
 		this.producers = producers;
+		this.ticksPerSecond = ticksPerSecond;
 	}
 
+	/**
+	 * Adds a simple producer to the list of producers.
+	 *
+	 * @param speed The speed of the producer
+	 * @param multipliers The multipliers of the producer
+	 */
 	addProducer(speed: number, multipliers?: number[]) {
 		this.producers.push(
 			new SimpleProducer({
 				speed,
 				multipliers,
-			})
+				ticksPerSecond: this.ticksPerSecond,
+			}),
 		);
 	}
 
-	getTickValue(ticksPerSecond: number): number {
+	/**
+	 * Gets the amount of money that will be added in one tick.
+	 *
+	 * @returns The amount of money that will be added in one tick
+	 */
+	getTickValue(ticksPerSecond?: number): number {
 		return this.producers
 			.map((x) => x.getTickValue(ticksPerSecond))
 			.reduce((a, b) => a + b, 0);
 	}
 
-	tick(ticksPerSecond: number) {
-		this.producers
-			// @ts-ignore TODO: remove ts-ignore
-			.filter((x) => typeof x.update === "function")
+	/**
+	 * Does a full update of the currency.
+	 */
+	tick() {
+		this.producers.forEach((x) => {
 			// @ts-ignore
-			.forEach((x) => x.update());
+			if (x.update) x.update();
+		});
 
-		this.value = this.getTickValue(ticksPerSecond);
+		this.amount += this.getTickValue();
 	}
 
+	/**
+	 * Cleans the producers that should be cleaned.
+	 * This should be called at a regular interval.
+	 */
+	clean() {
+		this.producers = this.producers.filter((x) => !x.shouldBeCleaned);
+	}
+
+	/**
+	 * Gets the amount of money that will be added per second.
+	 */
 	get perSecondEarnings() {
 		return this.getTickValue(1);
 	}
