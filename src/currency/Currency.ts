@@ -1,4 +1,4 @@
-import { AnyProducer } from "../producer/Producer";
+import { AnyProducer } from "../producer";
 import { SimpleProducer } from "../producer/SimpleProducer";
 
 export class Currency {
@@ -36,6 +36,12 @@ export class Currency {
 	}
 
 	tick(ticksPerSecond: number) {
+		this.producers
+			// @ts-ignore TODO: remove ts-ignore
+			.filter((x) => typeof x.update === "function")
+			// @ts-ignore
+			.forEach((x) => x.update());
+
 		this.value = this.getTickValue(ticksPerSecond);
 	}
 

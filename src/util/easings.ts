@@ -5,3 +5,24 @@ export function easeOutSine(x: number): number {
 export function easeOutCubic(x: number): number {
 	return 1 - Math.pow(1 - x, 3);
 }
+
+export function linear(x: number): number {
+	return x;
+}
+
+export enum Easing {
+	EaseOutSine,
+	EaseOutCubic,
+	Linear,
+}
+
+export function getEasing(easing: Easing) {
+	switch (easing) {
+		case Easing.EaseOutSine:
+			return easeOutSine;
+		case Easing.EaseOutCubic:
+			return easeOutCubic;
+		case Easing.Linear:
+			return linear;
+	}
+}
