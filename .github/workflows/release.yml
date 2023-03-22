@@ -21,7 +21,7 @@ jobs:
         with:
           version: latest
       - name: Install dependencies
-        run: pnpm ci
+        run: pnpm install
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
