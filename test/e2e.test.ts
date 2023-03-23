@@ -9,19 +9,23 @@ it("Simple incremental game", async () => {
 	let coins = new Currency({
 		amount: 0,
 		name: "coins",
-		ticksPerSecond: 0.2,
+		ticksPerSecond: 5,
 	});
 
 	coins.addProducer(1);
 	coins.addProducer(2);
 	expect(coins.amount).toBe(0);
 
-	let loop = setTimeout(() => {
+	let loop = setInterval(() => {
 		coins.tick();
 	}, 200);
 
-	await sleep(1000);
-	clearTimeout(loop);
+	await sleep(1001);
 
-	expect(coins.amount).toBe(3 * 5);
+	expect(coins.amount).toBe(3);
+	coins.addProducer(3);
+
+	await sleep(1000);
+
+	expect(coins.amount).toBe(3 * 10 + 3 * 5);
 });

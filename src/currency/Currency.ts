@@ -40,6 +40,7 @@ export class Currency {
 	 * @param multipliers The multipliers of the producer
 	 */
 	addProducer(speed: number, multipliers?: number[]) {
+		console.log("Adding producer", speed, multipliers);
 		this.producers.push(
 			new SimpleProducer({
 				speed,
@@ -56,7 +57,10 @@ export class Currency {
 	 */
 	getTickValue(ticksPerSecond?: number): number {
 		return this.producers
-			.map((x) => x.getTickValue(ticksPerSecond))
+			.map((x) => {
+				console.log("Getting tick value", x, x.getTickValue(ticksPerSecond));
+				return x.getTickValue(ticksPerSecond);
+			})
 			.reduce((a, b) => a + b, 0);
 	}
 
@@ -64,6 +68,8 @@ export class Currency {
 	 * Does a full update of the currency.
 	 */
 	tick() {
+		console.log("Ticking", this.getTickValue());
+
 		this.producers.forEach((x) => {
 			// @ts-ignore
 			if (x.update) x.update();
