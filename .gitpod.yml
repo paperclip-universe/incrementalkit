@@ -1,0 +1,3 @@
+tasks:
+  - command: pnpm install
+  - command: pnpm build
