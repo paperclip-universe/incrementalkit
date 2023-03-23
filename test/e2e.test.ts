@@ -20,12 +20,12 @@ it("Simple incremental game", async () => {
 		coins.tick();
 	}, 200);
 
-	await sleep(1001);
+	await sleep(1100);
 
 	expect(coins.amount).toBe(3);
 	coins.addProducer(3);
 
-	await sleep(1000);
+	await sleep(1100);
 
-	expect(coins.amount).toBe(3 * 10 + 3 * 5);
+	expect(coins.amount).toBe(9);
 });

@@ -15,22 +15,26 @@ export class Currency {
 	name: string;
 	producers: AnyProducer[];
 	ticksPerSecond: number;
+	decimalPlaces: number;
 
 	constructor({
 		amount,
 		name,
 		producers = [],
 		ticksPerSecond,
+		decimalPlaces = 1,
 	}: {
 		amount: number;
 		name: string;
 		producers?: AnyProducer[];
 		ticksPerSecond: number;
+		decimalPlaces?: number;
 	}) {
 		this.amount = amount;
 		this.name = name;
 		this.producers = producers;
 		this.ticksPerSecond = ticksPerSecond;
+		this.decimalPlaces = decimalPlaces;
 	}
 
 	/**
@@ -75,7 +79,9 @@ export class Currency {
 			if (x.update) x.update();
 		});
 
-		this.amount += this.getTickValue();
+		this.amount = Number(
+			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces),
+		);
 	}
 
 	/**
