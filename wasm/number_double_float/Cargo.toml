@@ -9,4 +9,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 lazy_static = "1.4.0"
+number_base = { version = "0.1.0", path = "../number_base" }
 wasm-bindgen = "0.2.84"

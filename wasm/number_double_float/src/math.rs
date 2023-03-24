@@ -1,14 +1,10 @@
+use number_base::BaseNumber;
+
 use crate::{
     util::{from_mantissa_exponent, from_mantissa_exponent_no_normalize, power_of_10},
     Decimal, MAX_SIGNIFICANT_DIGITS,
 };
 use std::ops::*;
-
-impl Decimal {
-    pub fn recip(&self) -> Decimal {
-        from_mantissa_exponent(1.0 / self.mantissa, -self.exponent)
-    }
-}
 
 impl Add<Decimal> for Decimal {
     type Output = Decimal;
@@ -113,8 +109,9 @@ impl Sub<Decimal> for &Decimal {
 impl Sub<Decimal> for Decimal {
     type Output = Decimal;
 
+    #[allow(clippy::suspicious_arithmetic_impl)]
     fn sub(self, decimal: Decimal) -> Decimal {
-        self + &decimal.neg()
+        self + decimal.neg()
     }
 }
 
@@ -180,6 +177,7 @@ impl MulAssign<Decimal> for Decimal {
 impl Div<Decimal> for Decimal {
     type Output = Decimal;
 
+    #[allow(clippy::suspicious_arithmetic_impl)]
     fn div(self, decimal: Decimal) -> Decimal {
         self * decimal.recip()
     }

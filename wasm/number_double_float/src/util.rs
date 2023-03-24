@@ -65,8 +65,3 @@ pub fn pad_end(string: String, max_length: u32, fill_string: String) -> String {
 pub fn to_fixed(num: f64, places: u32) -> String {
     format!("{:.*}", places as usize, num)
 }
-
-/// Formats the given number to the given number of significant digits and parses it back to a number.
-pub fn to_fixed_num(num: f64, places: u32) -> f64 {
-    to_fixed(num, places).parse::<f64>().unwrap()
-}
