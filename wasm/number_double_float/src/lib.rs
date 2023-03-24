@@ -232,7 +232,6 @@ impl Display for Decimal {
     }
 }
 
-#[wasm_bindgen]
 impl BaseNumber for Decimal {
     fn to_number(&self) -> f64 {
         //  Problem: new(116.0).to_number() returns 115.99999999999999.
