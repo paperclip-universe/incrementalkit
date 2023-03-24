@@ -1,3 +1,4 @@
 tasks:
+  - command: pnpm add -g pnpm
   - command: pnpm install
   - command: pnpm build

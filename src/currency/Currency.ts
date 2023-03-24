@@ -1,6 +1,8 @@
 import { AnyProducer } from "../producer";
 import { SimpleProducer } from "../producer/SimpleProducer";
 
+export type Mixin = (currency: Currency) => never;
+
 /**
  * A currency is a resource that can be earned and spent.
  * It has a value, a name, and a list of producers.
@@ -10,12 +12,13 @@ import { SimpleProducer } from "../producer/SimpleProducer";
  * @param producers The producers producing the currency
  * @param ticksPerSecond The amount of ticks per second
  */
-export class Currency {
+export abstract class Currency {
 	amount: number;
 	name: string;
 	producers: AnyProducer[];
 	ticksPerSecond: number;
 	decimalPlaces: number;
+	systems: (inp: Currency) => Currency[];
 
 	constructor({
 		amount,
@@ -50,7 +53,7 @@ export class Currency {
 				speed,
 				multipliers,
 				ticksPerSecond: this.ticksPerSecond,
-			}),
+			})
 		);
 	}
 
@@ -62,7 +65,11 @@ export class Currency {
 	getTickValue(ticksPerSecond?: number): number {
 		return this.producers
 			.map((x) => {
-				console.log("Getting tick value", x, x.getTickValue(ticksPerSecond));
+				console.log(
+					"Getting tick value",
+					x,
+					x.getTickValue(ticksPerSecond)
+				);
 				return x.getTickValue(ticksPerSecond);
 			})
 			.reduce((a, b) => a + b, 0);
@@ -80,7 +87,7 @@ export class Currency {
 		});
 
 		this.amount = Number(
-			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces),
+			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces)
 		);
 	}
 
