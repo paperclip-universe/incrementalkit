@@ -1,7 +1,9 @@
 import { AnyProducer } from "../producer";
 import { SimpleProducer } from "../producer/SimpleProducer";
 
-export type Mixin = (currency: Currency) => never;
+export type Mixin = <T extends new (...args: any[]) => any>(Base: T) => {
+	new (...args: any[]): InstanceType<T> & { [key: string]: any };
+};
 
 /**
  * A currency is a resource that can be earned and spent.
@@ -18,21 +20,29 @@ export abstract class Currency {
 	producers: AnyProducer[];
 	ticksPerSecond: number;
 	decimalPlaces: number;
-	systems: (inp: Currency) => Currency[];
 
-	constructor({
-		amount,
-		name,
-		producers = [],
-		ticksPerSecond,
-		decimalPlaces = 1,
-	}: {
-		amount: number;
-		name: string;
-		producers?: AnyProducer[];
-		ticksPerSecond: number;
-		decimalPlaces?: number;
-	}) {
+	constructor(
+		// REFACTOR - extract creating a currency to a factory
+		mixins: Mixin[],
+		{
+			amount,
+			name,
+			producers = [],
+			ticksPerSecond,
+			decimalPlaces = 1,
+		}: {
+			amount: number;
+			name: string;
+			producers?: AnyProducer[];
+			ticksPerSecond: number;
+			decimalPlaces?: number;
+		},
+	) {
+		mixins.forEach((mixin) => {
+			// TODO - Fix this
+			// @ts-ignore
+			Object.assign(this, new mixin(this.constructor));
+		});
 		this.amount = amount;
 		this.name = name;
 		this.producers = producers;
@@ -53,7 +63,7 @@ export abstract class Currency {
 				speed,
 				multipliers,
 				ticksPerSecond: this.ticksPerSecond,
-			})
+			}),
 		);
 	}
 
@@ -65,11 +75,7 @@ export abstract class Currency {
 	getTickValue(ticksPerSecond?: number): number {
 		return this.producers
 			.map((x) => {
-				console.log(
-					"Getting tick value",
-					x,
-					x.getTickValue(ticksPerSecond)
-				);
+				console.log("Getting tick value", x, x.getTickValue(ticksPerSecond));
 				return x.getTickValue(ticksPerSecond);
 			})
 			.reduce((a, b) => a + b, 0);
@@ -79,15 +85,13 @@ export abstract class Currency {
 	 * Does a full update of the currency.
 	 */
 	tick() {
-		console.log("Ticking", this.getTickValue());
-
 		this.producers.forEach((x) => {
 			// @ts-ignore
 			if (x.update) x.update();
 		});
 
 		this.amount = Number(
-			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces)
+			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces),
 		);
 	}
 

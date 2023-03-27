@@ -1,5 +1,6 @@
 import { Easing, getEasing } from "../util/easings";
 
+// TODO: replace with mixin
 export class DiminishingProducer {
 	speed: number;
 	multipliers: number[];
