@@ -1,9 +1,14 @@
-import { Currency, Mixin } from "../Currency";
+import { Currency } from "../Currency";
 
 export type LinkedCurrencyExchangeRateFunction = (
 	gainedLinkedCurrency: number,
-	currentLinkedCurrency: number,
+	currentCurrency: number
 ) => number;
+
+export type LinkedMixin<T extends new (...args: any[]) => Currency> = {
+	linkedCurrency: Currency;
+	linkedCurrencyExchangeRate: LinkedCurrencyExchangeRateFunction;
+} & T;
 
 /**
  * A mixin that links a currency to another currency.
@@ -11,18 +16,18 @@ export type LinkedCurrencyExchangeRateFunction = (
  *
  * @param exchangeRate The exchange rate function
  * @param linkedCurrency The currency to link to
- * @returns
+ * @returns A mixin
  */
-export function Linked({
+export function Linked<T extends new (...args: any[]) => Currency>({
 	exchangeRate,
 	linkedCurrency,
 }: {
 	exchangeRate: LinkedCurrencyExchangeRateFunction;
 	linkedCurrency: Currency;
-}): Mixin {
-	return function <TBase extends new (...args: any[]) => Currency>(
-		Base: TBase,
-	) {
+}): LinkedMixin<T> {
+	// TODO - PLEASE JUST WORK AAAA
+	// @ts-ignore
+	return function (Base: T) {
 		return class extends Base {
 			linkedCurrency: Currency;
 			linkedCurrencyExchangeRate: LinkedCurrencyExchangeRateFunction;
@@ -34,7 +39,12 @@ export function Linked({
 			}
 
 			tick() {
+				console.log("mixins linked");
 				super.tick();
+				this.amount += this.linkedCurrencyExchangeRate(
+					this.linkedCurrency.getTickValue(),
+					this.amount
+				);
 			}
 		};
 	};

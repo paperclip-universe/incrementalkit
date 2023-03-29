@@ -5,7 +5,8 @@
 	"main": "dist/index.js",
 	"scripts": {
 		"build": "tsc && wasm-pack build",
-		"test": "vitest",
+		"test": "vitest --run",
+		"test:dev": "vitest",
 		"test:ui": "vitest --ui",
 		"semantic-release": "semantic-release"
 	},

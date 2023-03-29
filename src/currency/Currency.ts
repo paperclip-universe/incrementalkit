@@ -1,9 +1,9 @@
 import { AnyProducer } from "../producer";
 import { SimpleProducer } from "../producer/SimpleProducer";
+import { LinkedMixin } from "./mixins/Linked";
 
-export type Mixin = <T extends new (...args: any[]) => any>(Base: T) => {
-	new (...args: any[]): InstanceType<T> & { [key: string]: any };
-};
+export type AnyMixin = LinkedMixin<typeof Currency>;
+export type Mixin<T extends Currency> = (Base: T) => T & {};
 
 /**
  * A currency is a resource that can be earned and spent.
@@ -14,35 +14,26 @@ export type Mixin = <T extends new (...args: any[]) => any>(Base: T) => {
  * @param producers The producers producing the currency
  * @param ticksPerSecond The amount of ticks per second
  */
-export abstract class Currency {
+export class Currency {
 	amount: number;
 	name: string;
 	producers: AnyProducer[];
 	ticksPerSecond: number;
 	decimalPlaces: number;
 
-	constructor(
-		// REFACTOR - extract creating a currency to a factory
-		mixins: Mixin[],
-		{
-			amount,
-			name,
-			producers = [],
-			ticksPerSecond,
-			decimalPlaces = 1,
-		}: {
-			amount: number;
-			name: string;
-			producers?: AnyProducer[];
-			ticksPerSecond: number;
-			decimalPlaces?: number;
-		},
-	) {
-		mixins.forEach((mixin) => {
-			// TODO - Fix this
-			// @ts-ignore
-			Object.assign(this, new mixin(this.constructor));
-		});
+	constructor({
+		amount,
+		name,
+		producers = [],
+		ticksPerSecond,
+		decimalPlaces = 1,
+	}: {
+		amount: number;
+		name: string;
+		producers?: AnyProducer[];
+		ticksPerSecond: number;
+		decimalPlaces?: number;
+	}) {
 		this.amount = amount;
 		this.name = name;
 		this.producers = producers;
@@ -57,13 +48,12 @@ export abstract class Currency {
 	 * @param multipliers The multipliers of the producer
 	 */
 	addProducer(speed: number, multipliers?: number[]) {
-		console.log("Adding producer", speed, multipliers);
 		this.producers.push(
 			new SimpleProducer({
 				speed,
 				multipliers,
 				ticksPerSecond: this.ticksPerSecond,
-			}),
+			})
 		);
 	}
 
@@ -75,7 +65,6 @@ export abstract class Currency {
 	getTickValue(ticksPerSecond?: number): number {
 		return this.producers
 			.map((x) => {
-				console.log("Getting tick value", x, x.getTickValue(ticksPerSecond));
 				return x.getTickValue(ticksPerSecond);
 			})
 			.reduce((a, b) => a + b, 0);
@@ -85,13 +74,14 @@ export abstract class Currency {
 	 * Does a full update of the currency.
 	 */
 	tick() {
+		console.log("vanilla tick");
 		this.producers.forEach((x) => {
 			// @ts-ignore
 			if (x.update) x.update();
 		});
 
 		this.amount = Number(
-			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces),
+			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces)
 		);
 	}
 
@@ -109,4 +99,24 @@ export abstract class Currency {
 	get perSecondEarnings() {
 		return this.getTickValue(1);
 	}
+}
+
+export function createCurrency(
+	mixins: AnyMixin[],
+	params: {
+		amount: number;
+		name: string;
+		producers?: AnyProducer[];
+		ticksPerSecond: number;
+		decimalPlaces?: number;
+	}
+): Currency {
+	let currency = Currency;
+	for (const mixin of mixins) {
+		// REFACTOR - will have to do full
+		// @ts-ignore
+		currency = new mixin(currency);
+	}
+
+	return new currency(params);
 }

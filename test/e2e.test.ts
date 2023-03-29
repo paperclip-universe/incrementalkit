@@ -1,12 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { Currency } from "../src";
-
-function sleep(time: number): Promise<void> {
-	return new Promise((resolve) => setTimeout(resolve, time));
-}
+import { sleep } from "./utils";
 
 it("Simple incremental game", async () => {
-	let coins = new Currency({
+	let coins = new Currency([], {
 		amount: 0,
 		name: "coins",
 		ticksPerSecond: 5,

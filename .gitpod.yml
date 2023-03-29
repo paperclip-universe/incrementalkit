@@ -1,4 +1,6 @@
 tasks:
+  - command: rustup default nightly
+  - command: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
   - command: pnpm add -g pnpm
   - command: pnpm install
   - command: pnpm build
