@@ -2,7 +2,7 @@ import { Currency } from "../Currency";
 
 export type LinkedCurrencyExchangeRateFunction = (
 	gainedLinkedCurrency: number,
-	currentCurrency: number
+	currentCurrency: number,
 ) => number;
 
 export type LinkedMixin<T extends new (...args: any[]) => Currency> = {
@@ -42,7 +42,7 @@ export function Linked<T extends new (...args: any[]) => Currency>({
 				super.tick();
 				this.amount += this.linkedCurrencyExchangeRate(
 					this.linkedCurrency.getTickValue(),
-					this.amount
+					this.amount,
 				);
 			}
 		};
