@@ -25,7 +25,7 @@ export function Linked<T extends new (...args: any[]) => Currency>({
 	exchangeRate: LinkedCurrencyExchangeRateFunction;
 	linkedCurrency: Currency;
 }): LinkedMixin<T> {
-	// TODO - PLEASE JUST WORK AAAA
+	// TODO - Remove ts-ignore
 	// @ts-ignore
 	return function (Base: T) {
 		return class extends Base {
