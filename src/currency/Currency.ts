@@ -1,7 +1,6 @@
 import { AnyProducer } from "../producer";
 import { Producer } from "../producer/Producer";
 import { LinkedMixin } from "./mixins/Linked";
-import { Mixin } from "../mixin/base";
 
 export type AnyMixin = LinkedMixin<typeof Currency>;
 
