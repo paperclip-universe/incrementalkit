@@ -1,6 +1,10 @@
 import { Producer } from "../producer/Producer";
+import { Serializable } from "../serialize/Serializable";
 import { LinkedMixin } from "./mixins/Linked";
 
+export type CurrnecySerializeData = {
+	mixins: AnyMixin[];
+};
 export type AnyMixin = LinkedMixin<typeof Currency>;
 
 /**
@@ -12,13 +16,16 @@ export type AnyMixin = LinkedMixin<typeof Currency>;
  * @param producers The producers producing the currency
  * @param ticksPerSecond The amount of ticks per second
  */
-export class Currency {
+export class Currency implements Serializable<Currency> {
 	amount: number;
 	name: string;
 	producers: Producer[];
-	_ticksPerSecond: number;
 	decimalPlaces: number;
 	interval?: number;
+
+	_ticksPerSecond: number;
+
+	_serializeData?: CurrnecySerializeData;
 
 	constructor({
 		amount,
@@ -26,19 +33,22 @@ export class Currency {
 		producers = [],
 		ticksPerSecond,
 		decimalPlaces = 1,
+		_serializeData,
 	}: {
 		amount: number;
 		name: string;
 		producers?: Producer[];
 		ticksPerSecond: number;
 		decimalPlaces?: number;
+		_serializeData?: CurrnecySerializeData;
 	}) {
 		this.amount = amount;
 		this.name = name;
 		this.producers = producers;
-		this._ticksPerSecond = ticksPerSecond;
 		this.decimalPlaces = decimalPlaces;
 		this.interval = undefined;
+		this._ticksPerSecond = ticksPerSecond;
+		this._serializeData = _serializeData;
 	}
 
 	/**
@@ -139,5 +149,5 @@ export function createCurrency(
 		currency = new mixin(currency);
 	}
 
-	return new currency(params);
+	return new currency({ ...params, _serializeData: { mixins } });
 }
