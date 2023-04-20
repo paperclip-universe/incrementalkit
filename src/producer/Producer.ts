@@ -1,6 +1,4 @@
-import { DiminishingProducer } from "./DiminishingProducer";
-
-export class SimpleProducer {
+export class Producer {
 	speed: number;
 	multipliers: number[];
 	ticksPerSecond: number;
@@ -23,6 +21,27 @@ export class SimpleProducer {
 	getTickValue(ticksPerSecond?: number): number {
 		let tps = ticksPerSecond || this.ticksPerSecond;
 		let value = tps ? 1 / tps : 1;
-		return [this.speed, ...this.multipliers].reduce((a, b) => a * b) * value;
+		return (
+			[this.speed, ...this.multipliers].reduce((a, b) => a * b) * value
+		);
 	}
+}
+
+export function createProducer(
+	mixins: AnyMixin[],
+	params: {
+		amount: number;
+		name: string;
+		ticksPerSecond: number;
+		decimalPlaces?: number;
+	}
+): Producer {
+	let producer = Producer;
+	for (const mixin of mixins) {
+		// REFACTOR - will have to do full
+		// @ts-ignore
+		producer = new producer(currency);
+	}
+
+	return new producer(params);
 }

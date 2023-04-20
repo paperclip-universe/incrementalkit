@@ -1,5 +1,5 @@
 import { DiminishingProducer } from "./DiminishingProducer";
-import { SimpleProducer } from "./SimpleProducer";
+import { Producer } from "./Producer";
 
-export type AnyProducer = SimpleProducer | DiminishingProducer;
-export { DiminishingProducer, SimpleProducer };
+export type AnyProducer = Producer | DiminishingProducer;
+export { DiminishingProducer, Producer as SimpleProducer };

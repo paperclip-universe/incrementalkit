@@ -1,9 +1,9 @@
 import { AnyProducer } from "../producer";
-import { SimpleProducer } from "../producer/SimpleProducer";
+import { Producer } from "../producer/Producer";
 import { LinkedMixin } from "./mixins/Linked";
+import { Mixin } from "../mixin/base";
 
 export type AnyMixin = LinkedMixin<typeof Currency>;
-export type Mixin<T extends Currency> = (Base: T) => T & {};
 
 /**
  * A currency is a resource that can be earned and spent.
@@ -49,7 +49,7 @@ export class Currency {
 	 */
 	addProducer(speed: number, multipliers?: number[]) {
 		this.producers.push(
-			new SimpleProducer({
+			new Producer({
 				speed,
 				multipliers,
 				ticksPerSecond: this.ticksPerSecond,
@@ -74,7 +74,6 @@ export class Currency {
 	 * Does a full update of the currency.
 	 */
 	tick() {
-		console.log("vanilla tick");
 		this.producers.forEach((x) => {
 			// @ts-ignore
 			if (x.update) x.update();

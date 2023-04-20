@@ -9,15 +9,15 @@ it("Mixins#linked", () => {
 		ticksPerSecond: 1,
 	});
 	let prestigePoints = createCurrency(
-		[Linked({ exchangeRate: (x, _) => x, linkedCurrency: coins })],
+		[Linked({ exchangeRate: (x, _) => x / 10, linkedCurrency: coins })],
 		{
 			amount: 0,
-			name: "coins",
+			name: "prestigePoints",
 			ticksPerSecond: 1,
 		}
 	);
 	coins.addProducer(1);
 	coins.tick();
 	prestigePoints.tick();
-	expect(prestigePoints.amount).toBeGreaterThan(0.1);
+	expect(prestigePoints.amount).toBe(0.1);
 });

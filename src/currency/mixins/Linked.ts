@@ -39,7 +39,6 @@ export function Linked<T extends new (...args: any[]) => Currency>({
 			}
 
 			tick() {
-				console.log("mixins linked");
 				super.tick();
 				this.amount += this.linkedCurrencyExchangeRate(
 					this.linkedCurrency.getTickValue(),

@@ -3,7 +3,7 @@ import { Currency } from "../../src";
 
 describe("Currency", () => {
 	it("Currency", () => {
-		let currency = new Currency([], {
+		let currency = new Currency({
 			amount: 0,
 			name: "test",
 			ticksPerSecond: 1,
