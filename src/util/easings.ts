@@ -11,9 +11,9 @@ export function linear(x: number): number {
 }
 
 export enum Easing {
-	EaseOutSine,
-	EaseOutCubic,
-	Linear,
+	EaseOutSine = 0,
+	EaseOutCubic = 1,
+	Linear = 2,
 }
 
 export function getEasing(easing: Easing) {

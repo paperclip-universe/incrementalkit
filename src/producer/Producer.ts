@@ -1,3 +1,7 @@
+import { DiminishingMixin } from "./mixins/Diminishing";
+
+export type AnyMixin = DiminishingMixin<typeof Producer>;
+
 export class Producer {
 	speed: number;
 	multipliers: number[];
@@ -19,28 +23,27 @@ export class Producer {
 	}
 
 	getTickValue(ticksPerSecond?: number): number {
-		let tps = ticksPerSecond || this.ticksPerSecond;
-		let value = tps ? 1 / tps : 1;
-		return (
-			[this.speed, ...this.multipliers].reduce((a, b) => a * b) * value
-		);
+		const tps = ticksPerSecond || this.ticksPerSecond;
+		const value = tps ? 1 / tps : 1;
+		return [this.speed, ...this.multipliers].reduce((a, b) => a * b) * value;
 	}
+
+	update() {}
 }
 
 export function createProducer(
 	mixins: AnyMixin[],
 	params: {
-		amount: number;
-		name: string;
+		speed: number;
+		multipliers?: number[];
 		ticksPerSecond: number;
-		decimalPlaces?: number;
-	}
+	},
 ): Producer {
 	let producer = Producer;
 	for (const mixin of mixins) {
 		// REFACTOR - will have to do full
 		// @ts-ignore
-		producer = new producer(currency);
+		producer = new mixin(producer);
 	}
 
 	return new producer(params);

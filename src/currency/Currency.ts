@@ -1,4 +1,3 @@
-import { AnyProducer } from "../producer";
 import { Producer } from "../producer/Producer";
 import { LinkedMixin } from "./mixins/Linked";
 
@@ -16,9 +15,10 @@ export type AnyMixin = LinkedMixin<typeof Currency>;
 export class Currency {
 	amount: number;
 	name: string;
-	producers: AnyProducer[];
-	ticksPerSecond: number;
+	producers: Producer[];
+	_ticksPerSecond: number;
 	decimalPlaces: number;
+	interval?: number;
 
 	constructor({
 		amount,
@@ -29,15 +29,16 @@ export class Currency {
 	}: {
 		amount: number;
 		name: string;
-		producers?: AnyProducer[];
+		producers?: Producer[];
 		ticksPerSecond: number;
 		decimalPlaces?: number;
 	}) {
 		this.amount = amount;
 		this.name = name;
 		this.producers = producers;
-		this.ticksPerSecond = ticksPerSecond;
+		this._ticksPerSecond = ticksPerSecond;
 		this.decimalPlaces = decimalPlaces;
+		this.interval = undefined;
 	}
 
 	/**
@@ -51,8 +52,8 @@ export class Currency {
 			new Producer({
 				speed,
 				multipliers,
-				ticksPerSecond: this.ticksPerSecond,
-			})
+				ticksPerSecond: this._ticksPerSecond,
+			}),
 		);
 	}
 
@@ -79,8 +80,30 @@ export class Currency {
 		});
 
 		this.amount = Number(
-			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces)
+			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces),
 		);
+	}
+
+	/**
+	 * Uses `setInterval` to call `tick` at a regular interval.
+	 */
+	start() {
+		this.interval = setInterval(() => {
+			this.tick();
+		}, 1000 / this._ticksPerSecond);
+	}
+
+	/**
+	 * Stops the interval.
+	 */
+	stop() {
+		if (this.interval) clearInterval(this.interval);
+	}
+
+	set ticksPerSecond(value: number) {
+		this.stop();
+		this._ticksPerSecond = value;
+		this.start();
 	}
 
 	/**
@@ -104,10 +127,10 @@ export function createCurrency(
 	params: {
 		amount: number;
 		name: string;
-		producers?: AnyProducer[];
+		producers?: Producer[];
 		ticksPerSecond: number;
 		decimalPlaces?: number;
-	}
+	},
 ): Currency {
 	let currency = Currency;
 	for (const mixin of mixins) {

@@ -3,7 +3,7 @@ import { Currency } from "../src";
 import { sleep } from "./utils";
 
 it("Simple incremental game", async () => {
-	let coins = new Currency({
+	const coins = new Currency({
 		amount: 0,
 		name: "coins",
 		ticksPerSecond: 5,
@@ -13,9 +13,7 @@ it("Simple incremental game", async () => {
 	coins.addProducer(2);
 	expect(coins.amount).toBe(0);
 
-	let loop = setInterval(() => {
-		coins.tick();
-	}, 200);
+	coins.start();
 
 	await sleep(1100);
 
