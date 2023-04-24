@@ -9,6 +9,7 @@ export const Type = {
 	String: "string",
 	Symbol: "symbol",
 	Undefined: "undefined",
+	validateSchema,
 };
 
 export type SpecialType = { type: string; of: string };

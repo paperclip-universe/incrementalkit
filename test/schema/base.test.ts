@@ -1,4 +1,4 @@
-import { Schema, Type, validateSchema } from "../../src";
+import { Schema, Type } from "../../src";
 import { describe, expect, it } from "vitest";
 
 const exampleSchema: Schema = {
@@ -12,7 +12,7 @@ const exampleSchema: Schema = {
 describe("Schema", () => {
 	it("should validate a schema", () => {
 		expect(
-			validateSchema(exampleSchema, {
+			Type.validateSchema(exampleSchema, {
 				itemA: ["string"],
 				itemB: true,
 				itemC: {
@@ -24,7 +24,7 @@ describe("Schema", () => {
 
 	it("should return false if the schema is invalid", () => {
 		expect(
-			validateSchema(exampleSchema, {
+			Type.validateSchema(exampleSchema, {
 				itemA: ["string"],
 				itemB: true,
 				itemC: {
