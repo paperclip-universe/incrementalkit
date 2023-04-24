@@ -1,18 +1,12 @@
 import { Game } from "../game/Game";
 import { Producer } from "../producer/Producer";
-import {
-	Serializable,
-	JSONObject,
-	SerializableInto,
-} from "../serialize/Serializable";
-import { unwrap } from "../util/unwrap";
-import { LinkedMixin, Linked } from "./mixins/Linked";
+import { Serializable } from "../serialize/Serializable";
+import { LinkedMixin } from "./mixins/Linked";
 
 export type CurrnecySerializeData = {
 	mixins: AnyMixin[];
 };
 export type AnyMixin = LinkedMixin<typeof Currency>;
-
 
 /**
  * A currency is a resource that can be earned and spent.
@@ -23,7 +17,7 @@ export type AnyMixin = LinkedMixin<typeof Currency>;
  * @param producers The producers producing the currency
  * @param ticksPerSecond The amount of ticks per second
  */
-export class Currency implements SerializableInto<Currency, > {
+export class Currency implements Serializable<Currency> {
 	amount: number;
 	name: string;
 	producers: Producer[];

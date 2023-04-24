@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 export type JSONValue = string | number | boolean | JSONObject | JSONArray;
 
 export interface JSONObject {
@@ -11,7 +12,7 @@ export interface Serializable<T> {
 	deserialize(json: JSONObject): T;
 }
 
-export interface SerializableInto<T, Into> {
-	serialize(into: Into): JSONObject;
-	deserialize(json: JSONObject, into: Into): T;
+export interface Serializable<T> {
+	serialize(): JSON;
+	deserialize(json: JSON): T;
 }
