@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { Currency } from "../../src";
+import { describe, expect, it } from "vitest";
 
 describe("Currency", () => {
 	it("Currency", () => {

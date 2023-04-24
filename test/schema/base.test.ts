@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { Schema, Type, validateSchema } from "../../src";
+import { describe, expect, it } from "vitest";
 
 const exampleSchema: Schema = {
 	itemA: Type.Array(Type.String),

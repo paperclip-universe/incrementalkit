@@ -1,6 +1,6 @@
-import { expect, it } from "vitest";
-import { createProducer, Diminishing } from "../../../src";
+import { Diminishing, createProducer } from "../../../src";
 import { Easing } from "../../../src/util/easings";
+import { expect, it } from "vitest";
 
 it("Mixins#linked", () => {
 	const coins = createProducer(

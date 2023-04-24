@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
 import { Currency } from "../src";
 import { sleep } from "./utils";
+import { describe, expect, it } from "vitest";
 
 it("Simple incremental game", async () => {
 	const coins = new Currency({

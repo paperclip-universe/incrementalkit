@@ -1,6 +1,6 @@
-import { expect, it } from "vitest";
-import { createCurrency, Linked } from "../../../src";
+import { Linked, createCurrency } from "../../../src";
 import { sleep } from "../../utils";
+import { expect, it } from "vitest";
 
 it("Mixins#linked", () => {
 	const coins = createCurrency([], {
