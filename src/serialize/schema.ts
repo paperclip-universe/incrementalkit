@@ -17,13 +17,13 @@ export type Schema = {
 	[key: string]: Schema | SpecialType | string;
 };
 
-const exampleSchema: Schema = {
-	itemA: Type.Array(Type.String),
-	itemB: Type.Boolean,
-	itemC: {
-		subItemA: Type.Number,
-	},
-};
+// const exampleSchema: Schema = {
+// 	itemA: Type.Array(Type.String),
+// 	itemB: Type.Boolean,
+// 	itemC: {
+// 		subItemA: Type.Number,
+// 	},
+// };
 
 export function validateSchema(
 	schema: Schema,

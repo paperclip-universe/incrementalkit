@@ -2,7 +2,7 @@ import { JSONObject, Serializable } from "../serialize/Serializable";
 import { unwrap } from "../util/unwrap";
 import { DiminishingMixin } from "./mixins/Diminishing";
 
-export type AnyMixin = DiminishingMixin<typeof Producer>;
+export type AnyProducerMixin = DiminishingMixin<typeof Producer>;
 
 export class Producer implements Serializable<Producer> {
 	speed: number;
@@ -65,7 +65,7 @@ export class Producer implements Serializable<Producer> {
 }
 
 export function createProducer(
-	mixins: AnyMixin[],
+	mixins: AnyProducerMixin[],
 	params: {
 		speed: number;
 		multipliers?: number[];

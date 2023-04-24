@@ -1,4 +1,4 @@
-import { AnyMixin, Currency, createCurrency } from "../currency";
+import { AnyCurrencyMixin, Currency, createCurrency } from "../currency";
 import { Producer } from "../producer";
 
 export class Game {
@@ -9,7 +9,7 @@ export class Game {
 	constructor() {}
 
 	createCurrency(
-		mixins: AnyMixin[],
+		mixins: AnyCurrencyMixin[],
 		params: {
 			amount: number;
 			name: string;

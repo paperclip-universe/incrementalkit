@@ -4,9 +4,9 @@ import { Serializable } from "../serialize/Serializable";
 import { LinkedMixin } from "./mixins/Linked";
 
 export type CurrnecySerializeData = {
-	mixins: AnyMixin[];
+	mixins: AnyCurrencyMixin[];
 };
-export type AnyMixin = LinkedMixin<typeof Currency>;
+export type AnyCurrencyMixin = LinkedMixin<typeof Currency>;
 
 /**
  * A currency is a resource that can be earned and spent.
@@ -158,7 +158,7 @@ export class Currency implements Serializable<Currency> {
 }
 
 export function createCurrency(
-	mixins: AnyMixin[],
+	mixins: AnyCurrencyMixin[],
 	params: {
 		amount: number;
 		name: string;
