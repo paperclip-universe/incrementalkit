@@ -1,11 +1,18 @@
+import { Game } from "../game/Game";
 import { Producer } from "../producer/Producer";
-import { Serializable } from "../serialize/Serializable";
-import { LinkedMixin } from "./mixins/Linked";
+import {
+	Serializable,
+	JSONObject,
+	SerializableInto,
+} from "../serialize/Serializable";
+import { unwrap } from "../util/unwrap";
+import { LinkedMixin, Linked } from "./mixins/Linked";
 
 export type CurrnecySerializeData = {
 	mixins: AnyMixin[];
 };
 export type AnyMixin = LinkedMixin<typeof Currency>;
+
 
 /**
  * A currency is a resource that can be earned and spent.
@@ -16,7 +23,7 @@ export type AnyMixin = LinkedMixin<typeof Currency>;
  * @param producers The producers producing the currency
  * @param ticksPerSecond The amount of ticks per second
  */
-export class Currency implements Serializable<Currency> {
+export class Currency implements SerializableInto<Currency, > {
 	amount: number;
 	name: string;
 	producers: Producer[];
@@ -95,7 +102,7 @@ export class Currency implements Serializable<Currency> {
 	}
 
 	/**
-	 * Uses `setInterval` to call `tick` at a regular interval.
+	 * Uses `setInterval` to call `tick` at a regular interval. Should only be used for extremely simple games/testing. For larger games, use a `Game` loop.
 	 */
 	start() {
 		this.interval = setInterval(() => {
@@ -129,6 +136,30 @@ export class Currency implements Serializable<Currency> {
 	 */
 	get perSecondEarnings() {
 		return this.getTickValue(1);
+	}
+
+	serialize(): JSONObject {
+		return {
+			amount: this.amount,
+			name: this.name,
+			producers: this.producers.map((x) => x.serialize()),
+			decimalPlaces: this.decimalPlaces,
+			ticksPerSecond: this._ticksPerSecond,
+		};
+	}
+
+	deserialize(json: JSONObject): Currency {
+		this.amount = unwrap(json.amount);
+		this.name = unwrap(json.name);
+		this.decimalPlaces = unwrap(json.decimalPlaces);
+		this._ticksPerSecond = unwrap(json.ticksPerSecond);
+
+		this.producers = unwrap(json.producers).map((x) => {
+			const producer = new Producer({ ticksPerSecond: 1 });
+			return producer.deserialize(x);
+		});
+
+		return this;
 	}
 }
 

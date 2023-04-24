@@ -3,7 +3,7 @@ import { Currency } from "../../src";
 
 describe("Currency", () => {
 	it("Currency", () => {
-		let currency = new Currency({
+		const currency = new Currency({
 			amount: 0,
 			name: "test",
 			ticksPerSecond: 1,
@@ -21,5 +21,22 @@ describe("Currency", () => {
 		expect(currency.amount).toBe(1);
 		currency.tick();
 		expect(currency.amount).toBe(2);
+	});
+
+	it("Currency#serialize", () => {
+		const currency = new Currency({
+			amount: 0,
+			name: "test",
+			ticksPerSecond: 1,
+		});
+
+		// Should serialize
+		expect(currency.serialize()).toEqual({
+			amount: 0,
+			name: "test",
+			producers: [],
+			decimalPlaces: 1,
+			ticksPerSecond: 1,
+		});
 	});
 });
