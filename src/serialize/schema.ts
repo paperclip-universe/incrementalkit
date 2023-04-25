@@ -32,6 +32,7 @@ export function validateSchema(
 ): boolean {
 	for (const [key, value] of Object.entries(schema)) {
 		if (typeof value === "string") {
+			// rome-ignore lint/suspicious/useValidTypeof: use of enum ensures valid typeof comparison
 			if (typeof data[key] !== value) return false;
 		} else if (typeof value === "object") {
 			if (value.type === "array") {
