@@ -28,38 +28,17 @@ export type Schema = {
 
 export function validateSchema(
 	schema: Schema,
-	data: { [key: string]: any },
+	data: { [key: string]: any }
 ): boolean {
 	for (const [key, value] of Object.entries(schema)) {
 		if (typeof value === "string") {
-			switch (value) {
-				case Type.Boolean:
-					if (typeof data[key] !== "boolean") return false;
-					break;
-				case Type.Function:
-					if (typeof data[key] !== "function") return false;
-					break;
-				case Type.Number:
-					if (typeof data[key] !== "number") return false;
-					break;
-				case Type.Object:
-					if (typeof data[key] !== "object") return false;
-					break;
-				case Type.String:
-					if (typeof data[key] !== "string") return false;
-					break;
-				case Type.Symbol:
-					if (typeof data[key] !== "symbol") return false;
-					break;
-				case Type.Undefined:
-					if (typeof data[key] !== "undefined") return false;
-					break;
-			}
+			if (typeof data[key] !== value) return false;
 		} else if (typeof value === "object") {
 			if (value.type === "array") {
 				if (!Array.isArray(data[key])) return false;
 				for (const item of data[key]) {
-					if (!validateSchema({ item: value.of }, { item })) return false;
+					if (!validateSchema({ item: value.of }, { item }))
+						return false;
 				}
 			} else {
 				if (!validateSchema(value, data[key])) return false;
