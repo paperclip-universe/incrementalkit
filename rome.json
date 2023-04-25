@@ -11,6 +11,6 @@
 		"enabled": true
 	},
 	"files": {
-		"ignore": ["dist/*", "wasm/*"]
+		"ignore": ["dist/*", "wasm/*", "target/*"]
 	}
 }

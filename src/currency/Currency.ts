@@ -1,8 +1,7 @@
-import { Game } from "../game/Game";
 import { Producer } from "../producer/Producer";
+import { JSONObject, Schema, Type } from "../serialize";
 import { Serializable } from "../serialize/Serializable";
 import { LinkedMixin } from "./mixins/Linked";
-import { JSONObject, Type, Schema } from "../serialize";
 
 export type CurrencySerializeData = {
 	mixins: AnyCurrencyMixin[];
@@ -14,6 +13,9 @@ export const CurrencySerializeSchema: Schema = {
 	name: Type.String,
 	producers: Type.Array(Type.Class(Producer)),
 	decimalPlaces: Type.Number,
+	interval: Type.Number,
+	_ticksPerSecond: Type.Number,
+	_serializeData: Type.Object,
 };
 
 /**
@@ -49,7 +51,7 @@ export class Currency implements Serializable<Currency> {
 		producers?: Producer[];
 		ticksPerSecond: number;
 		decimalPlaces?: number;
-		_serializeData?: CurrnecySerializeData;
+		_serializeData?: CurrencySerializeData;
 	}) {
 		this.amount = amount;
 		this.name = name;
@@ -72,7 +74,7 @@ export class Currency implements Serializable<Currency> {
 				speed,
 				multipliers,
 				ticksPerSecond: this._ticksPerSecond,
-			})
+			}),
 		);
 	}
 
@@ -99,7 +101,7 @@ export class Currency implements Serializable<Currency> {
 		});
 
 		this.amount = Number(
-			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces)
+			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces),
 		);
 	}
 
@@ -151,15 +153,13 @@ export class Currency implements Serializable<Currency> {
 	}
 
 	deserialize(json: JSONObject): Currency {
-		this.amount = unwrap(json.amount);
-		this.name = unwrap(json.name);
-		this.decimalPlaces = unwrap(json.decimalPlaces);
-		this._ticksPerSecond = unwrap(json.ticksPerSecond);
+		const valid = Type.validateSchema(CurrencySerializeSchema, json);
+		if (!valid) throw new Error("Invalid JSON");
 
-		this.producers = unwrap(json.producers).map((x) => {
-			const producer = new Producer({ ticksPerSecond: 1 });
-			return producer.deserialize(x);
-		});
+		for (const key in json) {
+			// @ts-ignore
+			this[key] = json[key];
+		}
 
 		return this;
 	}
@@ -173,7 +173,7 @@ export function createCurrency(
 		producers?: Producer[];
 		ticksPerSecond: number;
 		decimalPlaces?: number;
-	}
+	},
 ): Currency {
 	let currency = Currency;
 	for (const mixin of mixins) {

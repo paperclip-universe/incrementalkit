@@ -35,8 +35,8 @@ describe("Schema", () => {
 				},
 				classA: new Test(1),
 				optionalB: 1,
-			})
-		).toBe(true);
+			}),
+		).toStrictEqual([true, ""]);
 	});
 
 	it("should return false if the schema is invalid", () => {
@@ -49,7 +49,7 @@ describe("Schema", () => {
 				},
 				classA: new Tost(),
 				optionalA: "test",
-			})
+			})[0],
 		).toBe(false);
 	});
 });

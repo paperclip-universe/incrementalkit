@@ -6,12 +6,13 @@ export interface JSONObject {
 
 export type JSONArray = Array<JSONValue>;
 
+// TODO: Clean up this mess
 export interface Serializable<T> {
 	serialize(): JSONObject;
 	deserialize(json: JSONObject): T;
 }
 
-export interface Serializable<T> {
+export interface SerializableJSON<T> {
 	serialize(): JSON;
 	deserialize(json: JSON): T;
 }
