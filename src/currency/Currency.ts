@@ -153,8 +153,11 @@ export class Currency implements Serializable<Currency> {
 	}
 
 	deserialize(json: JSONObject): Currency {
-		const valid = Type.validateSchema(CurrencySerializeSchema, json);
-		if (!valid) throw new Error("Invalid JSON");
+		const [valid, diagnostic] = Type.validateSchema(
+			CurrencySerializeSchema,
+			json,
+		);
+		if (!valid) throw new Error(diagnostic);
 
 		for (const key in json) {
 			// @ts-ignore

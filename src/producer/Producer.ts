@@ -1,8 +1,13 @@
+import { Schema, Type } from "../serialize/schema";
 import { JSONObject, Serializable } from "../serialize/Serializable";
-import { unwrap } from "../util/unwrap";
 import { DiminishingMixin } from "./mixins/Diminishing";
 
 export type AnyProducerMixin = DiminishingMixin<typeof Producer>;
+export const ProducerSerializeSchema: Schema = {
+	speed: Type.Number,
+	multipliers: Type.Array(Type.Number),
+	ticksPerSecond: Type.Number,
+};
 
 export class Producer implements Serializable<Producer> {
 	speed: number;
@@ -41,26 +46,19 @@ export class Producer implements Serializable<Producer> {
 	}
 
 	deserialize(json: JSONObject): Producer {
-		return new Producer({
-			speed: unwrap(
-				json.speed,
-				"Speed is not defined in serialized data for producer.",
-				"number",
-				1,
-			) as number,
-			multipliers: unwrap(
-				json.multipliers,
-				"Multipliers is not defined in serialized data for producer.",
-				"object",
-				[],
-			) as number[],
-			ticksPerSecond: unwrap(
-				json.ticksPerSecond,
-				"Ticks per second is not defined in serialized data for producer.",
-				"number",
-				1,
-			) as number,
-		});
+		const [valid, diagnostic] = Type.validateSchema(
+			ProducerSerializeSchema,
+			json,
+		);
+
+		if (!valid) throw new Error(diagnostic);
+
+		for (const key in json) {
+			// @ts-ignore
+			this[key] = json[key];
+		}
+
+		return this;
 	}
 }
 
