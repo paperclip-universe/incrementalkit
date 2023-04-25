@@ -8,14 +8,17 @@
 		"test": "vitest --run",
 		"test:dev": "vitest",
 		"test:ui": "vitest --ui",
-		"semantic-release": "semantic-release"
+		"semantic-release": "semantic-release",
+		"generate-graph": "dependency-cruiser --config .dependency-cruiser.js --exclude \"^node_modules\" --output-type dot src test | dot -Tsvg > .github/assets/dependency-graph.svg"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
 		"@vitest/ui": "^0.30.1",
+		"dependency-cruiser": "^12.11.3",
 		"semantic-release": "^21.0.1",
+		"typescript": "^5.0.4",
 		"vitest": "^0.30.1"
 	},
 	"repository": {
