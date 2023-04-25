@@ -1,5 +1,3 @@
-import { JSONObject } from "./Serializable";
-
 export const Type = {
 	Array: (type: string) => ({ type: "array", of: type }),
 	Boolean: "boolean",
@@ -9,10 +7,14 @@ export const Type = {
 	String: "string",
 	Symbol: "symbol",
 	Undefined: "undefined",
+	Class: <A>(ctor: { new (...args: any[]): A }) => ({
+		type: "class",
+		of: ctor,
+	}),
 	validateSchema,
 };
 
-export type SpecialType = { type: string; of: string };
+export type SpecialType = { type: string; of: any };
 
 export type Schema = {
 	[key: string]: Schema | SpecialType | string;
@@ -41,6 +43,8 @@ export function validateSchema(
 					if (!validateSchema({ item: value.of }, { item }))
 						return false;
 				}
+			} else if (value.type === "class") {
+				if (!(data[key] instanceof value.of)) return false;
 			} else {
 				if (!validateSchema(value, data[key])) return false;
 			}

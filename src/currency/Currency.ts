@@ -2,11 +2,18 @@ import { Game } from "../game/Game";
 import { Producer } from "../producer/Producer";
 import { Serializable } from "../serialize/Serializable";
 import { LinkedMixin } from "./mixins/Linked";
+import { JSONObject, Type, Schema } from "../serialize";
 
-export type CurrnecySerializeData = {
+export type CurrencySerializeData = {
 	mixins: AnyCurrencyMixin[];
 };
 export type AnyCurrencyMixin = LinkedMixin<typeof Currency>;
+
+export const CurrencySerializeSchema: Schema = {
+	amount: Type.Number,
+	name: Type.String,
+	producers: Type.Array()
+}
 
 /**
  * A currency is a resource that can be earned and spent.
@@ -64,7 +71,7 @@ export class Currency implements Serializable<Currency> {
 				speed,
 				multipliers,
 				ticksPerSecond: this._ticksPerSecond,
-			}),
+			})
 		);
 	}
 
@@ -91,7 +98,7 @@ export class Currency implements Serializable<Currency> {
 		});
 
 		this.amount = Number(
-			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces),
+			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces)
 		);
 	}
 
@@ -165,7 +172,7 @@ export function createCurrency(
 		producers?: Producer[];
 		ticksPerSecond: number;
 		decimalPlaces?: number;
-	},
+	}
 ): Currency {
 	let currency = Currency;
 	for (const mixin of mixins) {
