@@ -12,8 +12,9 @@ export type AnyCurrencyMixin = LinkedMixin<typeof Currency>;
 export const CurrencySerializeSchema: Schema = {
 	amount: Type.Number,
 	name: Type.String,
-	producers: Type.Array()
-}
+	producers: Type.Array(Type.Class(Producer)),
+	decimalPlaces: Type.Number,
+};
 
 /**
  * A currency is a resource that can be earned and spent.
@@ -33,7 +34,7 @@ export class Currency implements Serializable<Currency> {
 
 	_ticksPerSecond: number;
 
-	_serializeData?: CurrnecySerializeData;
+	_serializeData?: CurrencySerializeData;
 
 	constructor({
 		amount,

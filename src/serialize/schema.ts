@@ -1,5 +1,10 @@
 export const Type = {
-	Array: (type: string) => ({ type: "array", of: type }),
+	Array: (type: string | SpecialType) => ({ type: "array", of: type }),
+	Class: <A>(ctor: { new (...args: any[]): A }) => ({
+		type: "class",
+		of: ctor,
+	}),
+	Optional: (type: string | SpecialType) => ({ type: "optional", of: type }),
 	Boolean: "boolean",
 	Function: "function",
 	Number: "number",
@@ -7,10 +12,6 @@ export const Type = {
 	String: "string",
 	Symbol: "symbol",
 	Undefined: "undefined",
-	Class: <A>(ctor: { new (...args: any[]): A }) => ({
-		type: "class",
-		of: ctor,
-	}),
 	validateSchema,
 };
 
@@ -45,6 +46,9 @@ export function validateSchema(
 				}
 			} else if (value.type === "class") {
 				if (!(data[key] instanceof value.of)) return false;
+			} else if (value.type === "optional") {
+				if (data[key] && !validateSchema(value.of, data[key]))
+					return false;
 			} else {
 				if (!validateSchema(value, data[key])) return false;
 			}

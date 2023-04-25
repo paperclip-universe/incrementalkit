@@ -20,6 +20,8 @@ const exampleSchema: Schema = {
 		subItemA: Type.Number,
 	},
 	classA: Type.Class(Test),
+	optionalA: Type.Optional(Type.Number),
+	optionalB: Type.Optional(Type.Number),
 };
 
 describe("Schema", () => {
@@ -32,6 +34,7 @@ describe("Schema", () => {
 					subItemA: 1,
 				},
 				classA: new Test(1),
+				optionalB: 1,
 			})
 		).toBe(true);
 	});
@@ -45,6 +48,7 @@ describe("Schema", () => {
 					subItemA: "1",
 				},
 				classA: new Tost(),
+				optionalA: "test",
 			})
 		).toBe(false);
 	});
