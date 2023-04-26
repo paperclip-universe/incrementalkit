@@ -1,12 +1,14 @@
-import { Currency } from "../../src";
+import { Currency, Game } from "../../src";
 import { describe, expect, it } from "vitest";
 
 describe("Currency", () => {
 	it("Currency", () => {
-		const currency = new Currency({
+		const game = new Game({
+			tps: 10,
+		});
+		const currency = game.createCurrency([], {
 			amount: 0,
 			name: "test",
-			ticksPerSecond: 1,
 		});
 
 		// Should have the initial value

@@ -6,7 +6,9 @@ export class Game {
 	ticksPerSecond: number = 10;
 	interval?: number;
 
-	constructor() {}
+	constructor({ tps }: { tps: number }) {
+		this.ticksPerSecond = tps;
+	}
 
 	createCurrency(
 		mixins: AnyCurrencyMixin[],
@@ -14,17 +16,22 @@ export class Game {
 			amount: number;
 			name: string;
 			producers?: Producer[] | undefined;
-			ticksPerSecond: number;
 			decimalPlaces?: number | undefined;
-		},
-	) {
-		this.currencies.push(createCurrency(mixins, params));
+		}
+	): Currency {
+		const currency = createCurrency(mixins, {
+			...params,
+			ticksPerSecond: this.ticksPerSecond,
+		});
+		this.currencies.push(currency);
+		return currency;
 	}
 
-	start() {
+	start(): this {
 		this.interval = setInterval(() => {
 			this.tick();
 		}, 1000 / this.ticksPerSecond);
+		return this;
 	}
 
 	stop() {
