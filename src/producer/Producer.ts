@@ -32,7 +32,9 @@ export class Producer implements Serializable<Producer> {
 	getTickValue(ticksPerSecond?: number): number {
 		const tps = ticksPerSecond || this.ticksPerSecond;
 		const value = tps ? 1 / tps : 1;
-		return [this.speed, ...this.multipliers].reduce((a, b) => a * b) * value;
+		return (
+			[this.speed, ...this.multipliers].reduce((a, b) => a * b) * value
+		);
 	}
 
 	update() {}
@@ -45,20 +47,24 @@ export class Producer implements Serializable<Producer> {
 		};
 	}
 
-	deserialize(json: JSONObject): Producer {
+	static deserialize(json: JSONObject): Producer {
 		const [valid, diagnostic] = Type.validateSchema(
 			ProducerSerializeSchema,
-			json,
+			json
 		);
 
 		if (!valid) throw new Error(diagnostic);
 
+		// TODO: typesafe schema validation
+		// @ts-ignore
+		const producer = new Producer(json);
+
 		for (const key in json) {
 			// @ts-ignore
-			this[key] = json[key];
+			producer[key] = json[key];
 		}
 
-		return this;
+		return producer;
 	}
 }
 
@@ -68,7 +74,7 @@ export function createProducer(
 		speed: number;
 		multipliers?: number[];
 		ticksPerSecond: number;
-	},
+	}
 ): Producer {
 	let producer = Producer;
 	for (const mixin of mixins) {

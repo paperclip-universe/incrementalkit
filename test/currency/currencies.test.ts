@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 describe("Currency", () => {
 	it("Currency", () => {
 		const game = new Game({
-			tps: 10,
+			tps: 1,
 		});
 		const currency = game.createCurrency([], {
 			amount: 0,
