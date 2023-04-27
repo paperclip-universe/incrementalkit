@@ -74,7 +74,7 @@ export class Currency implements Serializable<Currency> {
 				speed,
 				multipliers,
 				ticksPerSecond: this._ticksPerSecond,
-			}),
+			})
 		);
 	}
 
@@ -101,7 +101,7 @@ export class Currency implements Serializable<Currency> {
 		});
 
 		this.amount = Number(
-			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces),
+			(this.amount + this.getTickValue()).toFixed(this.decimalPlaces)
 		);
 	}
 
@@ -155,7 +155,7 @@ export class Currency implements Serializable<Currency> {
 	deserialize(json: JSONObject): Currency {
 		const [valid, diagnostic] = Type.validateSchema(
 			CurrencySerializeSchema,
-			json,
+			json
 		);
 		if (!valid) throw new Error(diagnostic);
 
@@ -168,22 +168,20 @@ export class Currency implements Serializable<Currency> {
 	}
 }
 
-export function createCurrency(
-	mixins: AnyCurrencyMixin[],
-	params: {
-		amount: number;
-		name: string;
-		producers?: Producer[];
-		ticksPerSecond: number;
-		decimalPlaces?: number;
-	},
-): Currency {
+export function createCurrency(params: {
+	amount: number;
+	name: string;
+	producers?: Producer[];
+	ticksPerSecond: number;
+	decimalPlaces?: number;
+	mixins: AnyCurrencyMixin[];
+}): Currency {
 	let currency = Currency;
-	for (const mixin of mixins) {
+	for (const mixin of params.mixins) {
 		// REFACTOR - will have to do full
 		// @ts-ignore
 		currency = new mixin(currency);
 	}
 
-	return new currency({ ...params, _serializeData: { mixins } });
+	return new currency({ ...params, _serializeData: { params.mixins } });
 }

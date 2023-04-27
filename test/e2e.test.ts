@@ -1,12 +1,12 @@
-import { Currency } from "../src";
+import { Currency, Game } from "../src";
 import { sleep } from "./utils";
 import { describe, expect, it } from "vitest";
 
 it("Simple incremental game", async () => {
-	const coins = new Currency({
+	const game = new Game({ tps: 5 });
+	const coins = game.currency({
 		amount: 0,
 		name: "coins",
-		ticksPerSecond: 5,
 	});
 
 	coins.addProducer(1);
