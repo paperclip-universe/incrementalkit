@@ -174,10 +174,10 @@ export function createCurrency(params: {
 	producers?: Producer[];
 	ticksPerSecond: number;
 	decimalPlaces?: number;
-	mixins: AnyCurrencyMixin[];
+	mixins?: AnyCurrencyMixin[];
 }): Currency {
 	let currency = Currency;
-	for (const mixin of params.mixins) {
+	for (const mixin of params.mixins || []) {
 		// REFACTOR - will have to do full
 		// @ts-ignore
 		currency = new mixin(currency);

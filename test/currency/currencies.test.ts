@@ -6,7 +6,7 @@ describe("Currency", () => {
 		const game = new Game({
 			tps: 1,
 		});
-		const currency = game.createCurrency([], {
+		const currency = game.currency({
 			amount: 0,
 			name: "test",
 		});
