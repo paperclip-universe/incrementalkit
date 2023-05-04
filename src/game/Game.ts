@@ -10,25 +10,21 @@ export class Game {
 		this.ticksPerSecond = tps;
 	}
 
-	currency({
-		amount,
-		name,
-		producers,
-		decimalPlaces,
-		mixins = [],
-	}: {
-		amount: number;
-		name: string;
-		producers?: Producer[] | undefined;
-		decimalPlaces?: number | undefined;
-		mixins?: AnyCurrencyMixin[];
-	}): Currency {
+	currency(
+		name: string,
+		params: Partial<{
+			amount?: number;
+			producers?: Producer[] | undefined;
+			decimalPlaces?: number | undefined;
+			mixins?: AnyCurrencyMixin[];
+		}> = {}
+	): Currency {
 		const currency = createCurrency({
-			amount,
+			amount: params.amount || 0,
 			name,
-			producers,
-			decimalPlaces,
-			mixins,
+			producers: params.producers || [],
+			decimalPlaces: params.decimalPlaces || 2,
+			mixins: params.mixins || [],
 			ticksPerSecond: this.ticksPerSecond,
 		});
 		this.currencies.push(currency);

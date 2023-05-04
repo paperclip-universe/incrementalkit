@@ -4,10 +4,7 @@ import { describe, expect, it } from "vitest";
 
 it("Simple incremental game", async () => {
 	const game = new Game({ tps: 5 });
-	const coins = game.currency({
-		amount: 0,
-		name: "coins",
-	});
+	const coins = game.currency("coins");
 
 	coins.addProducer(1);
 	coins.addProducer(2);

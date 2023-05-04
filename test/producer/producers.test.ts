@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 describe("SimpleProducer", () => {
 	it("SimpleProducer", () => {
-		const producer = createProducer([], {
+		const producer = createProducer({
 			speed: 1,
 			ticksPerSecond: 1,
 		});
@@ -13,7 +13,7 @@ describe("SimpleProducer", () => {
 	});
 
 	it("Serialize", () => {
-		const producer = createProducer([], {
+		const producer = createProducer({
 			speed: 1,
 			ticksPerSecond: 1,
 		});
@@ -25,7 +25,10 @@ describe("SimpleProducer", () => {
 		});
 
 		expect(
-			Producer.deserialize({
+			createProducer({
+				speed: 1,
+				ticksPerSecond: 1,
+			}).deserialize({
 				multipliers: [],
 				speed: 1,
 				ticksPerSecond: 1,

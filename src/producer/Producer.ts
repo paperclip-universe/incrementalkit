@@ -60,10 +60,10 @@ export function createProducer(params: {
 	speed: number;
 	multipliers?: number[];
 	ticksPerSecond: number;
-	mixins: AnyProducerMixin[];
+	mixins?: AnyProducerMixin[];
 }): Producer {
 	let producer = Producer;
-	for (const mixin of params.mixins) {
+	for (const mixin of params.mixins || []) {
 		// REFACTOR - will have to do full
 		// @ts-ignore
 		producer = new mixin(producer);
