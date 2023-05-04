@@ -185,6 +185,6 @@ export function createCurrency(params: {
 
 	return new currency({
 		...params,
-		_serializeData: { mixins: params.mixins },
+		_serializeData: { mixins: params.mixins || [] },
 	});
 }
