@@ -9,7 +9,7 @@ export type JSONArray = Array<JSONValue>;
 // TODO: Clean up this mess
 export interface Serializable<T> {
 	serialize(): JSONObject;
-	// deserialize(json: JSONObject): T;
+	deserialize(json: JSONObject): T;
 }
 
 export interface SerializableJSON<T> {

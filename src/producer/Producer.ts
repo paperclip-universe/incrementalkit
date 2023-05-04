@@ -1,13 +1,13 @@
-import { Schema, Type } from "../serialize/schema";
 import { JSONObject, Serializable } from "../serialize/Serializable";
 import { DiminishingMixin } from "./mixins/Diminishing";
+import { z } from "zod";
 
 export type AnyProducerMixin = DiminishingMixin<typeof Producer>;
-export const ProducerSerializeSchema: Schema = {
-	speed: Type.Number,
-	multipliers: Type.Array(Type.Number),
-	ticksPerSecond: Type.Number,
-};
+export const ProducerSerializeSchema = z.object({
+	speed: z.number(),
+	multipliers: z.array(z.number()),
+	ticksPerSecond: z.number(),
+});
 
 export class Producer implements Serializable<Producer> {
 	speed: number;
@@ -47,37 +47,23 @@ export class Producer implements Serializable<Producer> {
 		};
 	}
 
-	static deserialize(json: JSONObject): Producer {
-		const [valid, diagnostic] = Type.validateSchema(
-			ProducerSerializeSchema,
-			json
-		);
+	deserialize(json: JSONObject): Producer {
+		const data = ProducerSerializeSchema.parse(json);
 
-		if (!valid) throw new Error(diagnostic);
-
-		// TODO: typesafe schema validation
-		// @ts-ignore
-		const producer = new Producer(json);
-
-		for (const key in json) {
-			// @ts-ignore
-			producer[key] = json[key];
-		}
+		const producer = new Producer(data);
 
 		return producer;
 	}
 }
 
-export function createProducer(
-	mixins: AnyProducerMixin[],
-	params: {
-		speed: number;
-		multipliers?: number[];
-		ticksPerSecond: number;
-	}
-): Producer {
+export function createProducer(params: {
+	speed: number;
+	multipliers?: number[];
+	ticksPerSecond: number;
+	mixins: AnyProducerMixin[];
+}): Producer {
 	let producer = Producer;
-	for (const mixin of mixins) {
+	for (const mixin of params.mixins) {
 		// REFACTOR - will have to do full
 		// @ts-ignore
 		producer = new mixin(producer);

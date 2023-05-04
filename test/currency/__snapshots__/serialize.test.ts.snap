@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`currency should serialize 1`] = `
+{
+  "amount": 1,
+  "decimalPlaces": 1,
+  "name": "coins",
+  "producers": [
+    {
+      "multipliers": [],
+      "speed": 1,
+      "ticksPerSecond": 1,
+    },
+  ],
+  "ticksPerSecond": 1,
+}
+`;

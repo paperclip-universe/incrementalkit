@@ -1,22 +1,22 @@
-import { Producer } from "../producer/Producer";
-import { JSONObject, Schema, Type } from "../serialize";
+import {
+	Producer,
+	ProducerSerializeSchema,
+	createProducer,
+} from "../producer/Producer";
+import { JSONObject } from "../serialize";
 import { Serializable } from "../serialize/Serializable";
 import { LinkedMixin } from "./mixins/Linked";
+import { z } from "zod";
 
-export type CurrencySerializeData = {
-	mixins: AnyCurrencyMixin[];
-};
+export const CurrencySerializeSchema = z.object({
+	amount: z.number(),
+	name: z.string().nonempty(),
+	producers: z.array(ProducerSerializeSchema),
+	decimalPlaces: z.number().int(),
+	ticksPerSecond: z.number(),
+});
+
 export type AnyCurrencyMixin = LinkedMixin<typeof Currency>;
-
-export const CurrencySerializeSchema: Schema = {
-	amount: Type.Number,
-	name: Type.String,
-	producers: Type.Array(Type.Class(Producer)),
-	decimalPlaces: Type.Number,
-	interval: Type.Number,
-	_ticksPerSecond: Type.Number,
-	_serializeData: Type.Object,
-};
 
 /**
  * A currency is a resource that can be earned and spent.
@@ -36,22 +36,18 @@ export class Currency implements Serializable<Currency> {
 
 	_ticksPerSecond: number;
 
-	_serializeData?: CurrencySerializeData;
-
 	constructor({
 		amount,
 		name,
 		producers = [],
 		ticksPerSecond,
 		decimalPlaces = 1,
-		_serializeData,
 	}: {
 		amount: number;
 		name: string;
 		producers?: Producer[];
 		ticksPerSecond: number;
 		decimalPlaces?: number;
-		_serializeData?: CurrencySerializeData;
 	}) {
 		this.amount = amount;
 		this.name = name;
@@ -59,7 +55,6 @@ export class Currency implements Serializable<Currency> {
 		this.decimalPlaces = decimalPlaces;
 		this.interval = undefined;
 		this._ticksPerSecond = ticksPerSecond;
-		this._serializeData = _serializeData;
 	}
 
 	/**
@@ -153,16 +148,16 @@ export class Currency implements Serializable<Currency> {
 	}
 
 	deserialize(json: JSONObject): Currency {
-		const [valid, diagnostic] = Type.validateSchema(
-			CurrencySerializeSchema,
-			json
-		);
-		if (!valid) throw new Error(diagnostic);
+		// TODO: Better validation
+		const data = CurrencySerializeSchema.parse(json);
 
-		for (const key in json) {
-			// @ts-ignore
-			this[key] = json[key];
-		}
+		this.amount = data.amount;
+		this.decimalPlaces = data.decimalPlaces;
+		this.name = data.name;
+		this._ticksPerSecond = data.ticksPerSecond;
+		this.producers = data.producers.map((producer) =>
+			createProducer({ ...producer, mixins: [] })
+		);
 
 		return this;
 	}
@@ -185,6 +180,5 @@ export function createCurrency(params: {
 
 	return new currency({
 		...params,
-		_serializeData: { mixins: params.mixins || [] },
 	});
 }
