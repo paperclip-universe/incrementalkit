@@ -1,13 +1,9 @@
 import { LocalStorageDatastore } from "../../src/datastore/LocalStorage";
 import { AggregateDatastore } from "../../src/datastore/Aggregate";
 import { beforeEach, expect, test } from "vitest";
-import { LocalStorage } from "node-localstorage";
+import "localstorage-polyfill";
 
 const datastores = [AggregateDatastore, LocalStorageDatastore];
-
-beforeEach(() => {
-	global.localStorage = new LocalStorage("./scratch");
-});
 
 test.each(datastores)("%s datastore sanity check", (datastore) => {
 	const store = new datastore();
