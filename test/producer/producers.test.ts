@@ -1,5 +1,6 @@
-import { Producer, createProducer } from "../../src";
+import { Diminishing, createProducer } from "../../src";
 import { describe, expect, it } from "vitest";
+import { Easing } from "../../src/util/easings";
 
 describe("SimpleProducer", () => {
 	it("SimpleProducer", () => {
@@ -12,7 +13,7 @@ describe("SimpleProducer", () => {
 		expect(producer.getTickValue()).toBe(1);
 	});
 
-	it("Serialize", () => {
+	it("Serialize/deserialize", () => {
 		const producer = createProducer({
 			speed: 1,
 			ticksPerSecond: 1,
@@ -34,5 +35,13 @@ describe("SimpleProducer", () => {
 				ticksPerSecond: 1,
 			})
 		).toStrictEqual(producer);
+	});
+
+	it("Serialize/deserialize with mixins", () => {
+		const producer = createProducer({
+			mixins: [Diminishing({ easing: Easing.Linear, ticksToZero: 10 })],
+			speed: 1,
+			ticksPerSecond: 1,
+		});
 	});
 });

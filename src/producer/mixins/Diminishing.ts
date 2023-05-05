@@ -1,8 +1,13 @@
+import { z } from "zod";
 import { Easing, getEasing } from "../../util/easings";
 import { Producer } from "../Producer";
 
 export type DiminishingMixin<T extends new (...args: any[]) => Producer> =
 	{} & T;
+
+export const DiminishingMixinDataSchema = z.object({
+	ticksToZero: z.number().positive(),
+});
 
 /**
  * A mixin that links a currency to another currency.
@@ -13,13 +18,8 @@ export type DiminishingMixin<T extends new (...args: any[]) => Producer> =
  * @returns A mixin
  */
 export function Diminishing<
-	T extends new (
-		...args: any[]
-	) => Producer,
->(params: {
-	easing: Easing;
-	ticksToZero: number;
-}): DiminishingMixin<T> {
+	T extends new (...args: any[]) => Producer
+>(params: { easing: Easing; ticksToZero: number }): DiminishingMixin<T> {
 	// TODO - Remove ts-ignore
 	// @ts-ignore
 	return function (Base: T) {
@@ -45,7 +45,9 @@ export function Diminishing<
 				if (this.shouldBeCleaned) return 0;
 				return (
 					super.getTickValue(ticksPerSecond) *
-					getEasing(this.easing)(this.ticksToZero / this.ticksToZeroOriginal)
+					getEasing(this.easing)(
+						this.ticksToZero / this.ticksToZeroOriginal
+					)
 				);
 			}
 		};

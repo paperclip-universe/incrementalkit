@@ -3,6 +3,10 @@ import { DiminishingMixin } from "./mixins/Diminishing";
 import { z } from "zod";
 
 export type AnyProducerMixin = DiminishingMixin<typeof Producer>;
+export type MixinSerializeData = Partial<{
+	diminishing: Diminishing
+}>;
+
 export const ProducerSerializeSchema = z.object({
 	speed: z.number(),
 	multipliers: z.array(z.number()),
